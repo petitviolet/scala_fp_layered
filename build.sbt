@@ -14,9 +14,36 @@ def commonSettings(moduleName: String) = List(
   scalafmtOnCompile := true,
   scalafmtSbtCheck := true,
   libraryDependencies ++= List(
+    "net.petitviolet" %% "operator" % "+",
+    "org.slf4j" % "slf4j-api" % "1.7.25",
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
     "org.scalaz" %% "scalaz-core" % "7.2.25"
   )
 )
+
+lazy val webAppDependencies = {
+  val akkaVersion = "2.5.16"
+  val akkaHttpVersion = "10.1.1"
+  Seq(
+    "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+    "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+  )
+}
+
+lazy val databaseDependencies = {
+  val SCALIKE_JDBC = "3.3.1"
+  val SKINNY = "3.0.0"
+  Seq(
+    "com.h2database" % "h2" % "1.4.197",
+    "com.zaxxer" % "HikariCP" % "3.2.0",
+    "org.scalikejdbc" %% "scalikejdbc" % SCALIKE_JDBC,
+    "org.scalikejdbc" %% "scalikejdbc-config" % SCALIKE_JDBC,
+    "org.scalikejdbc" %% "scalikejdbc-syntax-support-macro" % SCALIKE_JDBC,
+    "org.skinny-framework" %% "skinny-orm" % SKINNY,
+    "org.skinny-framework" %% "skinny-task" % SKINNY,
+  )
+}
 
 lazy val scala_fp_layered = (project in file("."))
   .settings(commonSettings("scala_fp_layered"))
@@ -25,6 +52,7 @@ lazy val scala_fp_layered = (project in file("."))
 
 lazy val controllers = (project in file("modules/controllers"))
   .settings(commonSettings("controllers"))
+  .settings(libraryDependencies ++= webAppDependencies)
   .dependsOn(applications, infra)
 
 lazy val applications = (project in file("modules/applications"))
@@ -33,8 +61,13 @@ lazy val applications = (project in file("modules/applications"))
 
 lazy val domains = (project in file("modules/domains"))
   .settings(commonSettings("domains"))
+  .dependsOn(commons)
+
+lazy val commons = (project in file("modules/commons"))
+  .settings(commonSettings("commons"))
 
 lazy val infra = (project in file("modules/infra"))
   .settings(commonSettings("infra"))
+  .settings(libraryDependencies ++= databaseDependencies)
   .dependsOn(domains)
 
