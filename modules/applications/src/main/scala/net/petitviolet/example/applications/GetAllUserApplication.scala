@@ -9,8 +9,6 @@ import net.petitviolet.operator.toPipe
 
 class GetAllUserApplication[F[_]: Monad: UserRepository] extends ToBindOps {
   def execute(): F[GetAllUserResult] = {
-    def pure[A](a: A): F[A] = implicitly[Monad[F]].pure(a)
-
     UserRepository[F].findAll map { users: Seq[User] =>
       users.map { user =>
         UserResult(user.id.value, user.name.value, user.createdAt)
