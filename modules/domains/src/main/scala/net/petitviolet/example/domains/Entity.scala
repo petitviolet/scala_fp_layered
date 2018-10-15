@@ -8,7 +8,7 @@ trait Entity { self =>
 
   override final def equals(obj: scala.Any): Boolean = {
     self.getClass == obj.getClass &&
-      obj.asInstanceOf[Entity].id == self.id
+    obj.asInstanceOf[Entity].id == self.id
   }
 }
 
