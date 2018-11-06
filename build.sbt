@@ -17,7 +17,8 @@ def commonSettings(moduleName: String) = List(
     "net.petitviolet" %% "operator" % "+",
     "org.slf4j" % "slf4j-api" % "1.7.25",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
-    "org.scalaz" %% "scalaz-core" % "7.2.25"
+    "org.scalaz" %% "scalaz-core" % "7.2.25",
+    "org.wvlet.airframe" %% "airframe" % "0.72"
   )
 )
 
