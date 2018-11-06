@@ -4,17 +4,18 @@ import net.petitviolet.example.domains.Id
 import net.petitviolet.example.domains.users.{User, UserRepository}
 import scalaz.Monad
 import scalaz.syntax.ToBindOps
+import wvlet.airframe.bind
 
 trait UpdateUserApplication[F[_]] extends ToBindOps {
-  implicit val userRepository: UserRepository[F] =
-    wvlet.airframe.bind[UserRepository[F]]
-  implicit val M: Monad[F] = wvlet.airframe.bind[Monad[F]]
+  private implicit val userRepository: UserRepository[F] =
+    bind[UserRepository[F]]
+  private implicit val M: Monad[F] = bind[Monad[F]]
 
   def execute(param: UpdateUserParam): F[Either[String, UpdateUserResult]] = {
     def pure[A](a: A): F[A] = implicitly[Monad[F]].pure(a)
 
     val UpdateUserParam(userId, newName) = param
-    UserRepository[F].findById(Id(userId)) flatMap {
+    userRepository.findById(Id(userId)) flatMap {
       case Some(user) =>
         User.Name
           .create(newName)

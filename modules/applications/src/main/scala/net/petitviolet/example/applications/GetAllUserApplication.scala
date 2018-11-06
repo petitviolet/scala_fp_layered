@@ -9,11 +9,12 @@ import net.petitviolet.operator.toPipe
 import wvlet.airframe.bind
 
 trait GetAllUserApplication[F[_]] extends ToBindOps {
-  implicit val userRepository: UserRepository[F] = bind[UserRepository[F]]
-  implicit val M: Monad[F] = bind[Monad[F]]
+  private implicit val userRepository: UserRepository[F] =
+    bind[UserRepository[F]]
+  private implicit val M: Monad[F] = bind[Monad[F]]
 
   def execute(): F[GetAllUserResult] = {
-    UserRepository[F].findAll map { users: Seq[User] =>
+    userRepository.findAll map { users: Seq[User] =>
       users.map { user =>
         UserResult(user.id.value, user.name.value, user.createdAt)
       } |> GetAllUserResult.apply
