@@ -6,8 +6,12 @@ import net.petitviolet.example.domains.users.{User, UserRepository}
 import scalaz.Monad
 import scalaz.syntax.ToBindOps
 import net.petitviolet.operator.toPipe
+import wvlet.airframe.bind
 
-class GetAllUserApplication[F[_]: Monad: UserRepository] extends ToBindOps {
+trait GetAllUserApplication[F[_]] extends ToBindOps {
+  implicit val userRepository: UserRepository[F] = bind[UserRepository[F]]
+  implicit val M: Monad[F] = bind[Monad[F]]
+
   def execute(): F[GetAllUserResult] = {
     UserRepository[F].findAll map { users: Seq[User] =>
       users.map { user =>

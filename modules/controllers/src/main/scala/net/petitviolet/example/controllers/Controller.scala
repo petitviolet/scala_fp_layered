@@ -9,6 +9,7 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server._
 import net.petitviolet.example.commons.LoggerProvider
 import spray.json._
+import wvlet.airframe.Design
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -19,6 +20,8 @@ abstract class Controller
     with Route
     with LoggerProvider {
   protected def parallelism: Int
+
+  protected val design: Design = newDesign()
 
   protected implicit lazy val executionContext: ExecutionContext =
     ExecutionContext.fromExecutorService(

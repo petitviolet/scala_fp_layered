@@ -9,25 +9,27 @@ import net.petitviolet.example.applications.{
 import net.petitviolet.example.domains.impl.{AsyncIO, UserRepositoryImpl}
 import net.petitviolet.example.domains.users.UserRepository
 import net.petitviolet.example.infra.orm.Database
+import scalaz.Monad
 import spray.json.RootJsonFormat
 
 import scala.util.{Failure, Success}
 
 object UpdateUserController extends Controller {
-  import scalaz.std.scalaFuture.futureInstance
 
   override protected def parallelism: Int = 2
 
-  implicit val userRepository: UserRepository[AsyncIO] = UserRepositoryImpl
   implicit val format: RootJsonFormat[UpdateUserParam] = jsonFormat2(
     UpdateUserParam.apply)
 
   override lazy val route: Route =
     (post & path("user" / "update") & entity(as[UpdateUserParam])) { param =>
       val f = Database.SampleDB.localTxAsync { s =>
-        new UpdateUserApplication[AsyncIO]
-          .execute(param)
-          .run((s, executionContext))
+        design.withSession { session =>
+          session
+            .build[UpdateUserApplication[AsyncIO]]
+            .execute(param)
+            .run((s, executionContext))
+        }
       }
 
       onComplete(f) {
