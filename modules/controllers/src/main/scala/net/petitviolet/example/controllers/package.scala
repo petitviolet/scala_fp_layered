@@ -7,15 +7,16 @@ import scalaz.Monad
 import scala.concurrent.ExecutionContext
 
 package object controllers {
+  implicit val kleisliMonadReader = scalaz.Kleisli.kleisliMonadReader
+  implicit def futureInstance(implicit ec: ExecutionContext) =
+    scalaz.std.scalaFuture.futureInstance
+  implicit val userRepository: UserRepository[AsyncIO] = UserRepositoryImpl
 
-  import scalaz.Kleisli._
-  import scalaz.std.scalaFuture.futureInstance
-
-  def newDesign()(implicit ec: ExecutionContext) =
+  def newDesign[F[_]: Monad: UserRepository]() =
     wvlet.airframe.newDesign
-      .bind[UserRepository[AsyncIO]]
-      .toInstance(UserRepositoryImpl)
-      .bind[Monad[AsyncIO]]
-      .toInstance(implicitly[Monad[AsyncIO]])
+      .bind[UserRepository[F]]
+      .toInstance(implicitly)
+      .bind[Monad[F]]
+      .toInstance(implicitly)
 
 }

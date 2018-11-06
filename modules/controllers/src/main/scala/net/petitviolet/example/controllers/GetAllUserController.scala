@@ -1,11 +1,7 @@
 package net.petitviolet.example.controllers
 
 import akka.http.scaladsl.server.Route
-import net.petitviolet.example.applications.{
-  GetAllUserApplication,
-  GetAllUserResult,
-  UserResult
-}
+import net.petitviolet.example.applications._
 import net.petitviolet.example.domains.impl.AsyncIO
 import net.petitviolet.example.infra.orm.Database
 
@@ -17,6 +13,8 @@ object GetAllUserController extends Controller {
 
   private implicit lazy val eachFormat = jsonFormat3(UserResult.apply)
   private implicit lazy val allFormat = jsonFormat1(GetAllUserResult.apply)
+
+  private val design = newDesign[AsyncIO]()
 
   override lazy val route: Route =
     (get & path("users")) {

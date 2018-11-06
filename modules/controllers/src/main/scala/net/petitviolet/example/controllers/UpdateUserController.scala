@@ -1,15 +1,9 @@
 package net.petitviolet.example.controllers
 
 import akka.http.scaladsl.server.Route
-import net.petitviolet.example.applications.{
-  UpdateUserApplication,
-  UpdateUserParam,
-  UpdateUserResult
-}
-import net.petitviolet.example.domains.impl.{AsyncIO, UserRepositoryImpl}
-import net.petitviolet.example.domains.users.UserRepository
+import net.petitviolet.example.applications._
+import net.petitviolet.example.domains.impl.AsyncIO
 import net.petitviolet.example.infra.orm.Database
-import scalaz.Monad
 import spray.json.RootJsonFormat
 
 import scala.util.{Failure, Success}
@@ -20,6 +14,8 @@ object UpdateUserController extends Controller {
 
   implicit val format: RootJsonFormat[UpdateUserParam] = jsonFormat2(
     UpdateUserParam.apply)
+
+  private val design = newDesign[AsyncIO]()
 
   override lazy val route: Route =
     (post & path("user" / "update") & entity(as[UpdateUserParam])) { param =>

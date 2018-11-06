@@ -21,8 +21,6 @@ abstract class Controller
     with LoggerProvider {
   protected def parallelism: Int
 
-  protected val design: Design = newDesign()
-
   protected implicit lazy val executionContext: ExecutionContext =
     ExecutionContext.fromExecutorService(
       Executors.newFixedThreadPool(parallelism))
