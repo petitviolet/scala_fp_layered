@@ -120,7 +120,12 @@ object Database extends LoggerProvider {
       ) foreach {
         case (id, name) =>
           logger.info(s"id: $id, name: $name")
-          User.insert(User(id, name, dateTime, dateTime))
+          User.insert(
+            User(id,
+                 name,
+                 "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+                 dateTime,
+                 dateTime))
       }
     }
 

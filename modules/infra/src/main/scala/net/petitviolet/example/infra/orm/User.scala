@@ -6,6 +6,7 @@ import skinny.orm.Alias
 
 case class User(id: String,
                 name: String,
+                groupId: String,
                 createdAt: DateTime,
                 updatedAt: DateTime)
 
@@ -23,6 +24,7 @@ object User extends ORMapper[User] {
     createWithAttributes(
       'id -> user.id,
       'name -> user.name,
+      'groupId -> user.groupId,
       'createdAt -> user.createdAt,
       'updatedAt -> user.updatedAt,
     )

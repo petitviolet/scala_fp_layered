@@ -3,6 +3,7 @@ package net.petitviolet.example.domains.impl
 import cats.data.Kleisli
 import net.petitviolet.example.infra.orm
 import net.petitviolet.example.domains.Id
+import net.petitviolet.example.domains.groups.Group
 import net.petitviolet.example.domains.users.{User, UserRepository}
 import net.petitviolet.example.infra.orm.Database
 
@@ -10,7 +11,7 @@ import scala.concurrent.Future
 
 object UserRepositoryImpl extends UserRepository[AsyncIO] {
   private def dto2domain(dto: orm.User): User = {
-    User.apply(dto.id, dto.name, dto.createdAt)
+    User.apply(dto.id, dto.name, dto.groupId, dto.createdAt)
   }
 
   override def findAll: AsyncIO[Seq[User]] = Kleisli { implicit ctx =>
@@ -41,4 +42,6 @@ object UserRepositoryImpl extends UserRepository[AsyncIO] {
       }
     }
   }
+
+  override def findAllByGroup(groupId: Id[Group]): AsyncIO[Seq[User]] = ???
 }

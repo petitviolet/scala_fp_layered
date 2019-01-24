@@ -1,15 +1,13 @@
 package net.petitviolet.example.applications
 
 import cats.Monad
-import cats.syntax.{FlatMapSyntax, FunctorSyntax}
 import net.petitviolet.example.domains.Id
 import net.petitviolet.example.domains.users.{User, UserRepository}
 import wvlet.airframe.bind
 
-trait UpdateUserApplication[F[_]] extends FunctorSyntax with FlatMapSyntax {
+trait UpdateUserApplication[F[_]] extends Application[F] {
   private implicit val userRepository: UserRepository[F] =
     bind[UserRepository[F]]
-  private implicit val M: Monad[F] = bind[Monad[F]]
 
   def execute(param: UpdateUserParam): F[Either[String, UpdateUserResult]] = {
     def pure[A](a: A): F[A] = implicitly[Monad[F]].pure(a)
