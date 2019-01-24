@@ -2,13 +2,13 @@ package net.petitviolet.example.applications
 
 import java.time.ZonedDateTime
 
+import cats.Monad
+import cats.syntax.FunctorSyntax
 import net.petitviolet.example.domains.users.{User, UserRepository}
-import scalaz.Monad
-import scalaz.syntax.ToBindOps
 import net.petitviolet.operator.toPipe
 import wvlet.airframe.bind
 
-trait GetAllUserApplication[F[_]] extends ToBindOps {
+trait GetAllUserApplication[F[_]] extends FunctorSyntax {
   private implicit val userRepository: UserRepository[F] =
     bind[UserRepository[F]]
   private implicit val M: Monad[F] = bind[Monad[F]]

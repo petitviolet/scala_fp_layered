@@ -1,5 +1,6 @@
 package net.petitviolet.example.domains.impl
 
+import cats.data.Kleisli
 import net.petitviolet.example.infra.orm
 import net.petitviolet.example.domains.Id
 import net.petitviolet.example.domains.users.{User, UserRepository}
@@ -12,14 +13,14 @@ object UserRepositoryImpl extends UserRepository[AsyncIO] {
     User.apply(dto.id, dto.name, dto.createdAt)
   }
 
-  override def findAll: AsyncIO[Seq[User]] = scalaz.Kleisli { implicit ctx =>
+  override def findAll: AsyncIO[Seq[User]] = Kleisli { implicit ctx =>
     Future {
-      orm.User.findAll() map dto2domain
+      orm.User.findAll() map dto2domain: Seq[User]
     }
   }
 
   override def findById(id: Id[User]): AsyncIO[Option[User]] = {
-    scalaz.Kleisli { implicit ctx: Ctx =>
+    Kleisli { implicit ctx: Ctx =>
       Future {
         orm.User.findById(id.value) map dto2domain
       }
@@ -27,7 +28,7 @@ object UserRepositoryImpl extends UserRepository[AsyncIO] {
   }
 
   override def store(entity: User): AsyncIO[User] = {
-    scalaz.Kleisli { implicit ctx =>
+    Kleisli { implicit ctx =>
       Future {
         orm.User.deleteById(entity.id.value)
         orm.User.createWithAttributes(

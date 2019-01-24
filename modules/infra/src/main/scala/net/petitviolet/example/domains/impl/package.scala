@@ -1,6 +1,6 @@
 package net.petitviolet.example.domains
 
-import scalaz.Kleisli
+import cats.data.Kleisli
 import scalikejdbc.DBSession
 
 import scala.concurrent.{ExecutionContext, Future}

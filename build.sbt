@@ -17,7 +17,7 @@ def commonSettings(moduleName: String) = List(
     "net.petitviolet" %% "operator" % "0.5.0",
     "org.slf4j" % "slf4j-api" % "1.7.25",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
-    "org.scalaz" %% "scalaz-core" % "7.2.27",
+    "org.typelevel" %% "cats-core" % "1.5.0",
     "org.wvlet.airframe" %% "airframe" % "0.79"
   )
 )
@@ -69,6 +69,6 @@ lazy val commons = (project in file("modules/commons"))
 
 lazy val infra = (project in file("modules/infra"))
   .settings(commonSettings("infra"))
-  .settings(libraryDependencies ++= databaseDependencies)
+  .settings(libraryDependencies ++= ("io.monix" %% "monix" % "3.0.0-RC2") +: databaseDependencies)
   .dependsOn(domains)
 
