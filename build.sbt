@@ -1,6 +1,6 @@
 name := "scala_fp_layered"
 
-val scala = "2.12.6"
+val scala = "2.12.8"
 
 def commonSettings(moduleName: String) = List(
   name := moduleName,
@@ -14,17 +14,17 @@ def commonSettings(moduleName: String) = List(
   scalafmtOnCompile := true,
   scalafmtSbtCheck := true,
   libraryDependencies ++= List(
-    "net.petitviolet" %% "operator" % "+",
+    "net.petitviolet" %% "operator" % "0.5.0",
     "org.slf4j" % "slf4j-api" % "1.7.25",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
-    "org.scalaz" %% "scalaz-core" % "7.2.25",
-    "org.wvlet.airframe" %% "airframe" % "0.72"
+    "org.scalaz" %% "scalaz-core" % "7.2.27",
+    "org.wvlet.airframe" %% "airframe" % "0.79"
   )
 )
 
 lazy val webAppDependencies = {
-  val akkaVersion = "2.5.16"
-  val akkaHttpVersion = "10.1.1"
+  val akkaVersion = "2.5.19"
+  val akkaHttpVersion = "10.1.7"
   Seq(
     "com.typesafe.akka" %% "akka-stream" % akkaVersion,
     "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
@@ -33,11 +33,11 @@ lazy val webAppDependencies = {
 }
 
 lazy val databaseDependencies = {
-  val SCALIKE_JDBC = "3.3.1"
-  val SKINNY = "3.0.0"
+  val SCALIKE_JDBC = "3.3.2"
+  val SKINNY = "3.0.1"
   Seq(
     "com.h2database" % "h2" % "1.4.197",
-    "com.zaxxer" % "HikariCP" % "3.2.0",
+    "com.zaxxer" % "HikariCP" % "3.3.0",
     "org.scalikejdbc" %% "scalikejdbc" % SCALIKE_JDBC,
     "org.scalikejdbc" %% "scalikejdbc-config" % SCALIKE_JDBC,
     "org.scalikejdbc" %% "scalikejdbc-syntax-support-macro" % SCALIKE_JDBC,
