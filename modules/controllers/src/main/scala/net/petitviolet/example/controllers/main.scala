@@ -21,11 +21,11 @@ object main extends Application {
   override protected val applicationName: String = "app"
 
   override protected lazy val routes: Route =
-    List[Route](
+    RouteConcatenation.concat(
       GetAllUserController,
       UpdateUserController,
       HealthController
-    ).reduceLeft { _ ~ _ }
+    )
 }
 
 trait Application extends Directives with LoggerProvider {
@@ -91,7 +91,7 @@ trait Application extends Directives with LoggerProvider {
       .flatMap { _ =>
         bind
           .get()
-          .flatMap { _.unbind() }
+          .flatMap { _.terminate(hardDeadline = 10.seconds) }
           .flatMap { _ =>
             cleanUp()
             actorSystem.registerOnTermination {

@@ -13,7 +13,10 @@ trait GetAllUserApplication[F[_]] extends Application[F] {
   def execute(): F[GetAllUserResult] = {
     userRepository.findAll map { users: Seq[User] =>
       users.map { user =>
-        UserResult(user.id.value, user.name.value, user.groupId.value, user.createdAt)
+        UserResult(user.id.value,
+                   user.name.value,
+                   user.groupId.value,
+                   user.createdAt)
       } |> GetAllUserResult.apply
     }
   }
@@ -21,4 +24,7 @@ trait GetAllUserApplication[F[_]] extends Application[F] {
 
 case class GetAllUserResult(users: Seq[UserResult])
 
-case class UserResult(id: String, name: String, groupId: String, createdAt: ZonedDateTime)
+case class UserResult(id: String,
+                      name: String,
+                      groupId: String,
+                      createdAt: ZonedDateTime)
