@@ -50,6 +50,9 @@ lazy val scala_fp_layered = (project in file("."))
   .settings(commonSettings("scala_fp_layered"))
   .aggregate(applications, controllers, domains, infra)
 
+lazy val main = (project in file("modules/main"))
+  .settings(commonSettings("main"))
+  .dependsOn(controllers)
 
 lazy val controllers = (project in file("modules/controllers"))
   .settings(commonSettings("controllers"))

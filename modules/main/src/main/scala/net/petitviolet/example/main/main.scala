@@ -1,4 +1,4 @@
-package net.petitviolet.example.controllers
+package net.petitviolet.example.main
 
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicReference
@@ -11,21 +11,22 @@ import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import net.petitviolet.example.commons.LoggerProvider
+import net.petitviolet.example.controllers
+import net.petitviolet.example.controllers.{
+  GetAllUserController,
+  HealthController,
+  UpdateUserController
+}
 import net.petitviolet.example.infra.orm.Database
 
+import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.util.{Failure, Success, Try}
-import scala.concurrent.duration._
 
 object main extends Application {
   override protected val applicationName: String = "app"
 
-  override protected lazy val routes: Route =
-    RouteConcatenation.concat(
-      GetAllUserController,
-      UpdateUserController,
-      HealthController
-    )
+  override protected lazy val routes: Route = controllers.route
 }
 
 trait Application extends Directives with LoggerProvider {
