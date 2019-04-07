@@ -13,6 +13,8 @@ def commonSettings(moduleName: String) = List(
   ),
   scalafmtOnCompile := true,
   scalafmtSbtCheck := true,
+  connectInput := true,
+  trapExit := false,
   libraryDependencies ++= List(
     "net.petitviolet" %% "operator" % "0.5.0",
     "org.slf4j" % "slf4j-api" % "1.7.25",
