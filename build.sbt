@@ -20,6 +20,7 @@ def commonSettings(moduleName: String) = List(
     "org.slf4j" % "slf4j-api" % "1.7.25",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
     "org.typelevel" %% "cats-core" % "1.5.0",
+    "com.beachape" %% "enumeratum" % "1.5.13",
     "org.wvlet.airframe" %% "airframe" % "0.79"
   )
 )
