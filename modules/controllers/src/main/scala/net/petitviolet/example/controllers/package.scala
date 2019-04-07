@@ -1,8 +1,8 @@
 package net.petitviolet.example
 
-import akka.http.scaladsl.server.{ Route, RouteConcatenation }
+import akka.http.scaladsl.server.{Route, RouteConcatenation}
 import cats.Monad
-import net.petitviolet.example.domains.impl.{ AsyncIO, UserRepositoryImpl }
+import net.petitviolet.example.domains.impl.{AsyncIO, UserRepositoryImpl}
 import net.petitviolet.example.domains.users.UserRepository
 import wvlet.airframe.Design
 

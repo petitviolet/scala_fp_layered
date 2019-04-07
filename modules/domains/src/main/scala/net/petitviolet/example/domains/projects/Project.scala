@@ -1,14 +1,14 @@
-package net.petitviolet.example.domains.groups
+package net.petitviolet.example.domains.projects
 
 import net.petitviolet.example.domains.{DateTime, Entity, Id}
 
-sealed abstract case class Group(id: Id[Group],
-                                 name: Group.Name,
-                                 createdAt: DateTime)
+sealed abstract case class Project(id: Id[Project],
+                                   name: Project.Name,
+                                   createdAt: DateTime)
     extends Entity {}
 
-object Group {
-  case class Name private[groups] (value: String)
+object Project {
+  case class Name private[projects] (value: String)
 
   object Name {
     private val MAX_LENGTH = 20

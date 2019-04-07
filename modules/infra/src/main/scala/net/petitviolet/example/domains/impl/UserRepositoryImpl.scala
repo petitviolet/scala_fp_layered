@@ -3,7 +3,7 @@ package net.petitviolet.example.domains.impl
 import cats.data.Kleisli
 import net.petitviolet.example.infra.orm
 import net.petitviolet.example.domains.Id
-import net.petitviolet.example.domains.groups.Group
+import net.petitviolet.example.domains.projects.Project
 import net.petitviolet.example.domains.users.{User, UserRepository}
 import net.petitviolet.example.infra.orm.Database
 
@@ -43,5 +43,5 @@ object UserRepositoryImpl extends UserRepository[AsyncIO] {
     }
   }
 
-  override def findAllByGroup(groupId: Id[Group]): AsyncIO[Seq[User]] = ???
+  override def findAllByGroup(groupId: Id[Project]): AsyncIO[Seq[User]] = ???
 }

@@ -15,7 +15,7 @@ trait GetAllUserApplication[F[_]] extends Application[F] {
       users.map { user =>
         UserResult(user.id.value,
                    user.name.value,
-                   user.groupId.value,
+                   user.projectIds.head.value,
                    user.createdAt)
       } |> GetAllUserResult.apply
     }
