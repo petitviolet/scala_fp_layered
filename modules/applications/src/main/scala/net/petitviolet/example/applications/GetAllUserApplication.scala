@@ -15,7 +15,7 @@ trait GetAllUserApplication[F[_]] extends Application[F] {
       users.map { user =>
         UserResult(user.id.value,
                    user.name.value,
-                   user.projectIds.head.value,
+                   user.projectIds.map { _.value },
                    user.createdAt)
       } |> GetAllUserResult.apply
     }
@@ -26,5 +26,5 @@ case class GetAllUserResult(users: Seq[UserResult])
 
 case class UserResult(id: String,
                       name: String,
-                      groupId: String,
+                      projectIds: Set[String],
                       createdAt: ZonedDateTime)
