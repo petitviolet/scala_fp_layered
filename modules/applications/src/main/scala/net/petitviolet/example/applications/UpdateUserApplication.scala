@@ -3,17 +3,15 @@ package net.petitviolet.example.applications
 import cats.Monad
 import net.petitviolet.example.domains.Id
 import net.petitviolet.example.domains.users.{User, UserRepository}
-import wvlet.airframe.bind
 
-trait UpdateUserApplication[F[_]] extends Application[F] {
-  private implicit val userRepository: UserRepository[F] =
-    bind[UserRepository[F]]
+class UpdateUserApplication[F[_]: UserRepository: Monad]
+    extends Application[F] {
 
   def execute(param: UpdateUserParam): F[Either[String, UpdateUserResult]] = {
-    def pure[A](a: A): F[A] = implicitly[Monad[F]].pure(a)
+    def pure[A](a: A): F[A] = Monad[F].pure(a)
 
     val UpdateUserParam(userId, newName) = param
-    userRepository.findById(Id(userId)) flatMap {
+    UserRepository[F].findById(Id(userId)) flatMap {
       case Some(user) =>
         User.Name
           .create(newName)

@@ -9,7 +9,6 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server._
 import net.petitviolet.example.commons.LoggerProvider
 import spray.json._
-import wvlet.airframe.Design
 
 import scala.concurrent.{ExecutionContext, Future}
 

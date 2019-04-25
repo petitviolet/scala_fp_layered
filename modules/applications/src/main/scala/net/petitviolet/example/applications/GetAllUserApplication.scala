@@ -2,21 +2,18 @@ package net.petitviolet.example.applications
 
 import java.time.ZonedDateTime
 
+import cats.Monad
 import net.petitviolet.example.domains.users.{User, UserRepository}
 import net.petitviolet.operator.toPipe
-import wvlet.airframe.bind
 
-trait GetAllUserApplication[F[_]] extends Application[F] {
-  private implicit val userRepository: UserRepository[F] =
-    bind[UserRepository[F]]
-
+class GetAllUserApplication[F[_]: UserRepository: Monad]
+    extends Application[F] {
   def execute(): F[GetAllUserResult] = {
-    userRepository.findAll map { users: Seq[User] =>
+    UserRepository[F].findAll map { users: Seq[User] =>
       users.map { user =>
-        UserResult(user.id.value,
-                   user.name.value,
-                   user.projectIds.map { _.value },
-                   user.createdAt)
+        UserResult(user.id.value, user.name.value, user.projectIds.map {
+          _.value
+        }, user.createdAt)
       } |> GetAllUserResult.apply
     }
   }

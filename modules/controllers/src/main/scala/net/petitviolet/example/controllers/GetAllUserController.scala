@@ -14,15 +14,10 @@ object GetAllUserController extends Controller {
   private implicit lazy val eachFormat = jsonFormat4(UserResult.apply)
   private implicit lazy val allFormat = jsonFormat1(GetAllUserResult.apply)
 
-  lazy val app = design.withSession { session =>
-    session
-      .build[GetAllUserApplication[AsyncIO]]
-  }
-
   override lazy val route: Route =
     (get & path("users")) {
       val f = Database.SampleDB.withReadAsync { s =>
-        app
+        new GetAllUserApplication[AsyncIO]
           .execute()
           .run((s, executionContext))
       }
