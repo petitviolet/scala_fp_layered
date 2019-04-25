@@ -17,7 +17,7 @@ import net.petitviolet.example.controllers.{
   HealthController,
   UpdateUserController
 }
-import net.petitviolet.example.infra.orm.Database
+import net.petitviolet.example.infra.daos.Database
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}

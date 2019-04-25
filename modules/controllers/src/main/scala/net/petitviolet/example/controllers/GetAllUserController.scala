@@ -3,7 +3,7 @@ package net.petitviolet.example.controllers
 import akka.http.scaladsl.server.Route
 import net.petitviolet.example.applications._
 import net.petitviolet.example.domains.impl.AsyncIO
-import net.petitviolet.example.infra.orm.Database
+import net.petitviolet.example.infra.daos.Database
 
 import scala.util.{Failure, Success}
 

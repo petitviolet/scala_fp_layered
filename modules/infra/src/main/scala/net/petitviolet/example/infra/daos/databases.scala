@@ -1,4 +1,4 @@
-package net.petitviolet.example.infra.orm
+package net.petitviolet.example.infra.daos
 
 import java.time.{ZoneId, ZonedDateTime}
 
@@ -90,7 +90,7 @@ sealed abstract class Database(val dbName: Symbol)
 }
 
 object Database extends LoggerProvider {
-  private[orm] def generateId: String = java.util.UUID.randomUUID().toString
+  private[daos] def generateId: String = java.util.UUID.randomUUID().toString
 
   def setup(): Unit = {
     scalikejdbc.config.DBs.loadGlobalSettings()
@@ -123,7 +123,6 @@ object Database extends LoggerProvider {
           User.insert(
             User(id,
                  name,
-                 "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
                  dateTime,
                  dateTime))
       }
@@ -144,21 +143,26 @@ object Database extends LoggerProvider {
   def now() = ZonedDateTime.now(ZONE_ID)
 }
 
-trait ORMapper[T] extends SkinnyCRUDMapperWithId[String, T] {
-  private[orm] def db: Database = Database.SampleDB
+sealed trait ORMapper[T] extends SkinnyMapperBase[T] {
+  private[daos] def db: Database = Database.SampleDB
 
-  final override lazy val schemaName = None //Some(db.dbName.name)
+  final override lazy val schemaName = Some(db.dbName.name)
 
   protected def _tableName: String
 
   final override def tableName: String = _tableName
 
-  override def connectionPoolName: Any = db.dbName
+  final override def connectionPoolName: Any = db.dbName
 
   // 不用意にWriteSessionにならないように
   override def autoSession: DBSession =
     throw new RuntimeException("you cannot use AutoSession!")
+}
 
+trait ORMapperWithNoId[T] extends SkinnyNoIdCRUDMapper[T] with ORMapper[T] {
+}
+
+trait ORMapperWithStringId[T] extends SkinnyCRUDMapperWithId[String, T] with ORMapper[T] {
   override def useExternalIdGenerator: Boolean = true
 
   override def generateId: String = Database.generateId
@@ -167,3 +171,5 @@ trait ORMapper[T] extends SkinnyCRUDMapperWithId[String, T] {
 
   override def rawValueToId(value: Any): String = value.toString
 }
+
+trait ORMapperRel[T] extends SkinnyJoinTable[T] with ORMapper[T]
