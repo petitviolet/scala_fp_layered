@@ -11,7 +11,6 @@ object GetAllUserController extends Controller {
 
   override protected def parallelism: Int = 2
 
-  private implicit lazy val eachFormat = jsonFormat4(UserResult.apply)
   private implicit lazy val allFormat = jsonFormat1(GetAllUserResult.apply)
 
   override lazy val route: Route =

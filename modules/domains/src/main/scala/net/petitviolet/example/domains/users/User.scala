@@ -1,9 +1,9 @@
 package net.petitviolet.example.domains.users
 
-import enumeratum.values.{ StringEnum, StringEnumEntry }
-import net.petitviolet.edatetime.EDateTime
+import cats.Monad
 import net.petitviolet.example.commons.DateTime
 import net.petitviolet.example.commons.Validation._
+import net.petitviolet.example.commons.enums.{ StringEnum, StringEnumEntry }
 import net.petitviolet.example.domains._
 import net.petitviolet.example.domains.users.User._
 
@@ -14,7 +14,8 @@ sealed abstract case class User(
     status: Status,
     visibility: Visibility,
     createdAt: DateTime
-) extends Entity { self =>
+) extends Entity {
+  self =>
 
   private def copy(
       name: Name = self.name,
@@ -53,10 +54,20 @@ object User {
     ) {}
   }
 
-  def create(name: String, email: String, visibility: Visibility): Validated[User] = {
-    (Name.create(name), Email.create(email)) mapN { (name, email) =>
-      new User(Id.generate, email, name, Status.Temporal, visibility, EDateTime.now()) {}
-    }
+  def create[M[_]: Monad: UserRepository](email: String, name: String, visibility: String)(
+      implicit ctx: Context): M[Validated[User]] = {
+    import net.petitviolet.example.commons.monadic._
+
+    (Email.create(email), Name.create(name), Visibility.withValueValidated(visibility)).mapN {
+      (email, name, visibility) =>
+        UserRepository[M].findByEmail(email).map {
+          case None =>
+            OK(new User(Id.generate, email, name, Status.Temporal, visibility, ctx.now) {})
+
+          case Some(user) =>
+            NG(s"email(${email.value}) has already registered")
+        }
+    }.wrapUp
   }
 
   case class Email(value: String) extends AnyVal

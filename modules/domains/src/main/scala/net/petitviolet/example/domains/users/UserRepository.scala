@@ -1,12 +1,11 @@
 package net.petitviolet.example.domains.users
 
-import net.petitviolet.example.domains.projects.Project
-import net.petitviolet.example.domains.{Id, Repository, RepositoryResolver}
+import net.petitviolet.example.domains.{ Repository, RepositoryResolver }
 
-trait UserRepository[F[_]] extends Repository[F, User] {
-  def findAll: F[Seq[User]]
+trait UserRepository[M[_]] extends Repository[M, User] {
+  def findAll: M[Seq[User]]
 
-  def findAllByGroup(groupId: Id[Project]): F[Seq[User]]
+  def findByEmail(email: User.Email): M[Option[User]]
 }
 
 object UserRepository extends RepositoryResolver[UserRepository]

@@ -1,32 +1,29 @@
 package net.petitviolet.example.domains.posts
 
-import cats.Monad
-import net.petitviolet.example.commons.Validation
-import net.petitviolet.example.commons.Validation._
-import net.petitviolet.example.commons.monadic._
-import net.petitviolet.example.domains.users.{ User, UserRepository }
-import net.petitviolet.example.domains.{ AuthenticatedContext, DateTime, Entity, Id }
+import net.petitviolet.example.commons.{ DateTime, Validation }
+import net.petitviolet.example.domains.users.User
+import net.petitviolet.example.domains.{ AuthenticatedContext, Entity, Id }
 import net.petitviolet.operator.toIntOps
 
 sealed abstract case class Post(
-  id: Id[Post],
-  createdBy: Id[User],
-  text: Post.Text,
-  createdAt: DateTime,
-  updatedAt: DateTime
+    id: Id[Post],
+    createdBy: Id[User],
+    text: Post.Text,
+    createdAt: DateTime,
+    updatedAt: DateTime
 ) extends Entity {}
 
 object Post {
-  private[domain] def apply(id: Id[Post],
-    createdBy: Id[User],
-    text: String,
-    createdAt: DateTime,
-    updatedAt: DateTime) = {
+  private[posts] def apply(id: Id[Post],
+                           createdBy: Id[User],
+                           text: String,
+                           createdAt: DateTime,
+                           updatedAt: DateTime) = {
     new Post(id, createdBy, Text(text), createdAt, updatedAt) {}
   }
 
   def create(text: String)(
-    implicit ctx: AuthenticatedContext
+      implicit ctx: AuthenticatedContext
   ): Validation.Validated[Post] = {
     Text.create(text).map { text =>
       new Post(

@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 object UserRepositoryImpl extends UserRepository[AsyncIO] {
   private def dto2domain(dto: daos.User): User = {
-    User.apply(dto.id, dto.name, EDateTime(dto.createdAt))
+    User.apply(dto.id, dto.email, dto.name, dto.status, dto.visibility, EDateTime(dto.createdAt))
   }
 
   override def findAll: AsyncIO[Seq[User]] = Kleisli { implicit ctx =>
@@ -42,4 +42,6 @@ object UserRepositoryImpl extends UserRepository[AsyncIO] {
       }
     }
   }
+
+  override def findByEmail(email: User.Email): AsyncIO[Option[User]] = ???
 }

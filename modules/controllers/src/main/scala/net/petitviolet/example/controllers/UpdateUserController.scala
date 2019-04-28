@@ -24,8 +24,8 @@ object UpdateUserController extends Controller {
       }
 
       onComplete(f) {
-        case Success(Valid(UpdateUserResult(id))) =>
-          ok(s"updated: $id")
+        case Success(Valid(user)) =>
+          ok(s"updated: ${user.id}")
         case Success(Invalid(msg)) =>
           logger.warn(s"failed to update user. param = $param, msg = $msg")
           badRequest(msg.toList.mkString(", "))

@@ -2,6 +2,8 @@ package net.petitviolet.example.domains
 
 import java.util.UUID
 
+import net.petitviolet.example.commons.DateTime
+
 trait Entity { self =>
   def id: Id[_] // cut-corner
   def createdAt: DateTime

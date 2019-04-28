@@ -113,14 +113,22 @@ object Database extends LoggerProvider {
 
       val dateTime = now()
       (
-        ("11111111-1111-1111-1111-111111111111", "alice") ::
-          ("22222222-2222-2222-2222-222222222222", "bob") ::
-          ("33333333-3333-3333-3333-333333333333", "charlie") ::
+        ("11111111-1111-1111-1111-111111111111",
+         "alice@example.com",
+         "Activated",
+         "public",
+         "alice") ::
+          ("22222222-2222-2222-2222-222222222222", "bob@example.com", "Activated", "public", "bob") ::
+          ("33333333-3333-3333-3333-333333333333",
+         "charlie@example.com",
+         "Activated",
+         "public",
+         "charlie") ::
           Nil
       ) foreach {
-        case (id, name) =>
+        case (id, email, name, status, visibility) =>
           logger.info(s"id: $id, name: $name")
-          User.insert(User(id, name, dateTime, dateTime))
+          User.insert(User(id, email, name, status, visibility, dateTime, dateTime))
       }
     }
 

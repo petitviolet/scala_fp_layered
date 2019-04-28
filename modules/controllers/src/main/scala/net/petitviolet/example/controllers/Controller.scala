@@ -22,15 +22,13 @@ abstract class Controller
   protected def parallelism: Int
 
   protected implicit lazy val executionContext: ExecutionContext =
-    ExecutionContext.fromExecutorService(
-      Executors.newFixedThreadPool(parallelism))
+    ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(parallelism))
 
   def route: Route
 
   final override def apply(v1: RequestContext): Future[RouteResult] = route(v1)
 
-  private implicit val errorMessageResponseF
-    : RootJsonFormat[ErrorMessageResponse] = jsonFormat1(
+  private implicit val errorMessageResponseF: RootJsonFormat[ErrorMessageResponse] = jsonFormat1(
     ErrorMessageResponse.apply)
   private implicit val messageResponseF: RootJsonFormat[MessageResponse] =
     jsonFormat1(MessageResponse.apply)
@@ -60,8 +58,7 @@ abstract class Controller
     complete((StatusCodes.BadRequest, ErrorMessageResponse(msg).toJson))
 
   def serverError(msg: String): StandardRoute =
-    complete(
-      (StatusCodes.InternalServerError, ErrorMessageResponse(msg).toJson))
+    complete((StatusCodes.InternalServerError, ErrorMessageResponse(msg).toJson))
 }
 
 private case class ErrorMessageResponse(error: String)
