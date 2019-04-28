@@ -3,7 +3,7 @@ package net.petitviolet.example.domains
 import cats.data.Kleisli
 import scalikejdbc.DBSession
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 package object impl {
   private[impl] type Ctx = (DBSession, ExecutionContext)

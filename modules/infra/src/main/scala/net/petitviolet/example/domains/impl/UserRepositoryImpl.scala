@@ -4,7 +4,7 @@ import cats.data.Kleisli
 import net.petitviolet.example.infra.daos
 import net.petitviolet.edatetime.EDateTime
 import net.petitviolet.example.domains.Id
-import net.petitviolet.example.domains.users.{User, UserRepository}
+import net.petitviolet.example.domains.users.{ User, UserRepository }
 import net.petitviolet.example.infra.daos.Database
 
 import scala.concurrent.Future

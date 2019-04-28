@@ -1,15 +1,15 @@
 package net.petitviolet.example.infra.daos
 
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{ ZoneId, ZonedDateTime }
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 import net.petitviolet.example.commons.LoggerProvider
 import scalikejdbc._
 import scalikejdbc.config._
 import com.zaxxer.hikari.HikariDataSource
 import skinny.orm._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.io.Source
 import scala.util.Try
 
@@ -21,8 +21,8 @@ sealed abstract class Database(val dbName: Symbol)
   override val config: Config = ConfigFactory.load()
 
   /**
-    * DBに疎通できるかどうかの確認
-    */
+   * DBに疎通できるかどうかの確認
+   */
   def healthCheck(): Try[Unit] = Try {
     withRead { implicit s =>
       SQL("SELECT 1")
@@ -157,9 +157,7 @@ sealed trait ORMapper[T] extends SkinnyMapperBase[T] {
 
 trait ORMapperWithNoId[T] extends SkinnyNoIdCRUDMapper[T] with ORMapper[T] {}
 
-trait ORMapperWithStringId[T]
-    extends SkinnyCRUDMapperWithId[String, T]
-    with ORMapper[T] {
+trait ORMapperWithStringId[T] extends SkinnyCRUDMapperWithId[String, T] with ORMapper[T] {
   override def useExternalIdGenerator: Boolean = true
 
   override def generateId: String = Database.generateId

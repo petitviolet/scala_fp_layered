@@ -1,6 +1,6 @@
 package net.petitviolet.example.domains.users
 
-import enumeratum.values.{StringEnum, StringEnumEntry}
+import enumeratum.values.{ StringEnum, StringEnumEntry }
 import net.petitviolet.edatetime.EDateTime
 import net.petitviolet.example.commons.DateTime
 import net.petitviolet.example.commons.Validation._
@@ -43,24 +43,19 @@ object User {
                              status: String,
                              visibility: String,
                              createdAt: DateTime): User = {
-    new User(Id(id),
-             Email(email),
-             Name(name),
-             Status.withValue(status),
-             Visibility.withValue(visibility),
-             createdAt) {}
+    new User(
+      Id(id),
+      Email(email),
+      Name(name),
+      Status.withValue(status),
+      Visibility.withValue(visibility),
+      createdAt
+    ) {}
   }
 
-  def create(name: String,
-             email: String,
-             visibility: Visibility): Validated[User] = {
+  def create(name: String, email: String, visibility: Visibility): Validated[User] = {
     (Name.create(name), Email.create(email)) mapN { (name, email) =>
-      new User(Id.generate,
-               email,
-               name,
-               Status.Temporal,
-               visibility,
-               EDateTime.now()) {}
+      new User(Id.generate, email, name, Status.Temporal, visibility, EDateTime.now()) {}
     }
   }
 
