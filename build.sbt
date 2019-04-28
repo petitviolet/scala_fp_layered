@@ -17,6 +17,7 @@ def commonSettings(moduleName: String) = List(
   trapExit := false,
   libraryDependencies ++= List(
     "net.petitviolet" %% "operator" % "0.5.0",
+    "net.petitviolet" %% "edatetime" % "0.3.0",
     "org.slf4j" % "slf4j-api" % "1.7.25",
     "ch.qos.logback" % "logback-classic" % "1.2.3",
     "org.typelevel" %% "cats-core" % "1.5.0",
