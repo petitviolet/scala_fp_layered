@@ -7,10 +7,11 @@ import java.util.concurrent.Executors
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server._
+import cats.data.NonEmptyList
 import net.petitviolet.example.commons.LoggerProvider
 import spray.json._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 abstract class Controller
     extends SprayJsonSupport

@@ -1,9 +1,9 @@
 package net.petitviolet.example
 
-import java.time.ZonedDateTime
+import net.petitviolet.edatetime.EDateTime
 
 package object domains {
-  type DateTime = ZonedDateTime
+  type DateTime = EDateTime
 
-  def now(): DateTime = ZonedDateTime.now()
+  def now(): DateTime = EDateTime.now()
 }
