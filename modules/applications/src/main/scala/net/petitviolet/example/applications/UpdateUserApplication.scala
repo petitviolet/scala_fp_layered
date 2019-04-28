@@ -1,31 +1,31 @@
 package net.petitviolet.example.applications
 
 import cats.Monad
+import net.petitviolet.example.commons.Validation
+import net.petitviolet.example.commons.Validation.Validated
+import net.petitviolet.example.commons.monadic._
 import net.petitviolet.example.domains.Id
-import net.petitviolet.example.domains.users.{User, UserRepository}
+import net.petitviolet.example.domains.users.{ User, UserRepository }
 
-class UpdateUserApplication[F[_]: UserRepository: Monad]
-    extends Application[F] {
+class UpdateUserApplication[M[_]: UserRepository: Monad]
+    extends Application[M] {
 
-  def execute(param: UpdateUserParam): F[Either[String, UpdateUserResult]] = {
-    def pure[A](a: A): F[A] = Monad[F].pure(a)
+  def execute(param: UpdateUserParam): M[Validated[UpdateUserResult]] = {
+    def pure[A](a: A): M[A] = Monad[M].pure(a)
 
     val UpdateUserParam(userId, newName) = param
-    UserRepository[F].findById(Id(userId)) flatMap {
+    UserRepository[M].findById(Id(userId)).flatMap {
       case Some(user) =>
         User.Name
           .create(newName)
           .map { user.updateName }
-          .map { UserRepository[F].store } match {
-          case Right(userF) =>
-            userF map { user =>
-              Right(UpdateUserResult(user.id.value))
-            }
-          case Left(err) =>
-            pure(Left(err))
-        }
+          .map { UserRepository[M].store }
+          .map { _.map { user =>
+            UpdateUserResult(user.id.value)
+          }}
+          .flip
       case None =>
-        pure(Left(s"user($userId) not found."))
+        pure(Validation.NG(s"user($userId) not found."))
     }
   }
 }

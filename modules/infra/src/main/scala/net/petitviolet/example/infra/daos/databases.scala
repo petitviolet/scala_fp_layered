@@ -120,11 +120,7 @@ object Database extends LoggerProvider {
       ) foreach {
         case (id, name) =>
           logger.info(s"id: $id, name: $name")
-          User.insert(
-            User(id,
-                 name,
-                 dateTime,
-                 dateTime))
+          User.insert(User(id, name, dateTime, dateTime))
       }
     }
 
@@ -159,10 +155,11 @@ sealed trait ORMapper[T] extends SkinnyMapperBase[T] {
     throw new RuntimeException("you cannot use AutoSession!")
 }
 
-trait ORMapperWithNoId[T] extends SkinnyNoIdCRUDMapper[T] with ORMapper[T] {
-}
+trait ORMapperWithNoId[T] extends SkinnyNoIdCRUDMapper[T] with ORMapper[T] {}
 
-trait ORMapperWithStringId[T] extends SkinnyCRUDMapperWithId[String, T] with ORMapper[T] {
+trait ORMapperWithStringId[T]
+    extends SkinnyCRUDMapperWithId[String, T]
+    with ORMapper[T] {
   override def useExternalIdGenerator: Boolean = true
 
   override def generateId: String = Database.generateId
