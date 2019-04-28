@@ -1,25 +1,26 @@
 package net.petitviolet.example.domains.users
 
-import enumeratum.values.{ IntEnum, IntEnumEntry }
+import enumeratum.values.{StringEnum, StringEnumEntry}
 import net.petitviolet.edatetime.EDateTime
+import net.petitviolet.example.commons.DateTime
 import net.petitviolet.example.commons.Validation._
 import net.petitviolet.example.domains._
 import net.petitviolet.example.domains.users.User._
 
 sealed abstract case class User(
-  id: Id[User],
-  email: Email,
-  name: Name,
-  status: Status,
-  visibility: Visibility,
-  createdAt: DateTime
+    id: Id[User],
+    email: Email,
+    name: Name,
+    status: Status,
+    visibility: Visibility,
+    createdAt: DateTime
 ) extends Entity { self =>
 
   private def copy(
-    name: Name = self.name,
-    email: Email = self.email,
-    status: Status = self.status,
-    visibility: Visibility = self.visibility,
+      name: Name = self.name,
+      email: Email = self.email,
+      status: Status = self.status,
+      visibility: Visibility = self.visibility,
   ): this.type = {
     new User(
       id = self.id,
@@ -37,17 +38,29 @@ sealed abstract case class User(
 
 object User {
   private[domains] def apply(id: String,
-    email: String,
-    name: String,
-    status: Int,
-    visibility: Int,
-    createdAt: DateTime): User = {
-    new User(Id(id), Email(email), Name(name), Status.withValue(status), Visibility.withValue(visibility), createdAt) {}
+                             email: String,
+                             name: String,
+                             status: String,
+                             visibility: String,
+                             createdAt: DateTime): User = {
+    new User(Id(id),
+             Email(email),
+             Name(name),
+             Status.withValue(status),
+             Visibility.withValue(visibility),
+             createdAt) {}
   }
 
-  def create(name: String, email: String, visibility: Visibility): Validated[User] = {
+  def create(name: String,
+             email: String,
+             visibility: Visibility): Validated[User] = {
     (Name.create(name), Email.create(email)) mapN { (name, email) =>
-      new User(Id.generate, email, name, Status.Temporal, visibility, EDateTime.now()) {}
+      new User(Id.generate,
+               email,
+               name,
+               Status.Temporal,
+               visibility,
+               EDateTime.now()) {}
     }
   }
 
@@ -77,22 +90,22 @@ object User {
     }
   }
 
-  sealed abstract class Status(val value: Int) extends IntEnumEntry
+  sealed abstract class Status(val value: String) extends StringEnumEntry
 
-  object Status extends IntEnum[Status] {
-    case object Temporal extends Status(1)
-    case object Activated extends Status(2)
-    case object Banned extends Status(3)
-    case object Quit extends Status(4)
+  object Status extends StringEnum[Status] {
+    case object Temporal extends Status("temporal")
+    case object Activated extends Status("activated")
+    case object Banned extends Status("banned")
+    case object Quit extends Status("quit")
 
-    override def values= findValues
+    override def values = findValues
   }
 
-  sealed abstract class Visibility(val value: Int) extends IntEnumEntry
-  object Visibility extends IntEnum[Visibility] {
-    case object Public extends Visibility(1)
-    case object Private extends Visibility(2)
+  sealed abstract class Visibility(val value: String) extends StringEnumEntry
+  object Visibility extends StringEnum[Visibility] {
+    case object Public extends Visibility("public")
+    case object Private extends Visibility("private")
 
-    override def values= findValues
+    override def values = findValues
   }
 }
