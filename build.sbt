@@ -61,11 +61,15 @@ lazy val main = (project in file("modules/main"))
 lazy val controllers = (project in file("modules/controllers"))
   .settings(commonSettings("controllers"))
   .settings(libraryDependencies ++= webAppDependencies)
-  .dependsOn(applications, infra)
+  .dependsOn(applications, infra, queries)
 
 lazy val applications = (project in file("modules/applications"))
   .settings(commonSettings("applications"))
   .dependsOn(domains)
+
+lazy val queries = (project in file("modules/queries"))
+  .settings(commonSettings("queries"))
+  .dependsOn(infra, applications)
 
 lazy val domains = (project in file("modules/domains"))
   .settings(commonSettings("domains"))

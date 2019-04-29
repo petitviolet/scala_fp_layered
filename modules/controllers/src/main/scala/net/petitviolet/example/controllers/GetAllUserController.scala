@@ -1,9 +1,9 @@
 package net.petitviolet.example.controllers
 
 import akka.http.scaladsl.server.Route
-import net.petitviolet.example.applications._
 import net.petitviolet.example.domains.impl.AsyncIO
 import net.petitviolet.example.infra.daos.Database
+import net.petitviolet.example.queries.{ GetAllUserQuery, GetAllUserResult }
 
 import scala.util.{ Failure, Success }
 
@@ -16,7 +16,7 @@ object GetAllUserController extends Controller {
   override lazy val route: Route =
     (get & path("users")) {
       val f = Database.SampleDB.withReadAsync { s =>
-        new GetAllUserApplication[AsyncIO]
+        new GetAllUserQuery[AsyncIO]
           .execute()
           .run((s, executionContext))
       }
