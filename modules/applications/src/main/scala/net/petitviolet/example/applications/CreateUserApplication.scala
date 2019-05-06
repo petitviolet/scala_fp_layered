@@ -6,8 +6,8 @@ import net.petitviolet.example.commons.Validation._
 import net.petitviolet.example.domains.Context
 import net.petitviolet.example.domains.users.{ User, UserRepository }
 
-class CreateUserApplication[M[_]: Monad: UserRepository] extends Application[M] {
-  def execute(param: CreateUserParam): M[Validated[UserDto]] = {
+class CreateUserApplication[F[_]: Monad: UserRepository] extends Application[F] {
+  def execute(param: CreateUserParam): F[Validated[UserDto]] = {
     val CreateUserParam(email, name, visibility) = param
     implicit val ctx: Context = Context.create()
     User.create(name, email, visibility).map {

@@ -8,18 +8,21 @@ import net.petitviolet.example.commons.monadic._
 import net.petitviolet.example.domains.Id
 import net.petitviolet.example.domains.users.{ User, UserRepository }
 
-class UpdateUserApplication[M[_]: UserRepository: Monad] extends Application[M] {
+trait UpdateUserApplication[F[_]] extends Application[F] {
+  import wvlet.airframe.bind
+  implicit val M: Monad[F] = bind[Monad[F]]
+  implicit val userRepository: UserRepository[F] = bind[UserRepository[F]]
 
-  def execute(param: UpdateUserParam): M[Validated[UserDto]] = {
-    def pure[A](a: A): M[A] = Monad[M].pure(a)
+  def execute(param: UpdateUserParam): F[Validated[UserDto]] = {
+    def pure[A](a: A): F[A] = Monad[F].pure(a)
 
     val UpdateUserParam(userId, newName) = param
-    UserRepository[M].findById(Id(userId)).flatMap {
+    userRepository.findById(Id(userId)).flatMap {
       case Some(user) =>
         User.Name
           .create(newName)
           .map { user.updateName }
-          .map { UserRepository[M].store }
+          .map { userRepository.store }
           .map {
             _.map { UserDto.convert }
           }

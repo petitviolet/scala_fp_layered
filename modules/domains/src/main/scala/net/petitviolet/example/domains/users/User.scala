@@ -54,13 +54,13 @@ object User {
     ) {}
   }
 
-  def create[M[_]: Monad: UserRepository](email: String, name: String, visibility: String)(
-      implicit ctx: Context): M[Validated[User]] = {
+  def create[F[_]: Monad: UserRepository](email: String, name: String, visibility: String)(
+      implicit ctx: Context): F[Validated[User]] = {
     import net.petitviolet.example.commons.monadic._
 
     (Email.create(email), Name.create(name), Visibility.withValueValidated(visibility)).mapN {
       (email, name, visibility) =>
-        UserRepository[M].findByEmail(email).map {
+        UserRepository[F].findByEmail(email).map {
           case None =>
             OK(new User(Id.generate, email, name, Status.Temporal, visibility, ctx.now) {})
 

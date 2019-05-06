@@ -16,12 +16,14 @@ object UpdateUserController extends Controller {
 
   implicit val format: RootJsonFormat[UpdateUserParam] = jsonFormat2(UpdateUserParam.apply)
 
-  implicit val userRepository: UserRepository[AsyncIO] = UserRepositoryImpl
+  lazy val application = design.withSession { session =>
+    session.build[UpdateUserApplication[AsyncIO]]
+  }
 
   override lazy val route: Route =
     (post & path("user" / "update") & entity(as[UpdateUserParam])) { param =>
       val f = Database.SampleDB.localTxAsync { s =>
-        new UpdateUserApplication[AsyncIO]
+        application
           .execute(param)
           .run((s, executionContext))
       }

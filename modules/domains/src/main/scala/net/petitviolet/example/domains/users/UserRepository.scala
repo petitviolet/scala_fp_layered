@@ -3,10 +3,10 @@ package net.petitviolet.example.domains.users
 import net.petitviolet.example.domains.users.repo.Pure.Hoge
 import net.petitviolet.example.domains.{ Repository, RepositoryResolver }
 
-trait UserRepository[M[_]] extends Repository[M, User] {
-  def findAll: M[Seq[User]]
+trait UserRepository[F[_]] extends Repository[F, User] {
+  def findAll: F[Seq[User]]
 
-  def findByEmail(email: User.Email): M[Option[User]]
+  def findByEmail(email: User.Email): F[Option[User]]
 }
 
 object UserRepository extends RepositoryResolver[UserRepository]
@@ -73,13 +73,6 @@ object repo {
     }
   }
   object Pure {
-    trait Hoge[F]
-
-    class Foo[T](implicit val H: Hoge[T]) {}
-    class Foo_[T: Hoge] {
-      val H = implicitly[Hoge[T]]
-    }
-
     import cats._
     trait UserRepository[F[_]] {
       def findById(userId: UserId): F[Option[User]]
@@ -100,10 +93,28 @@ object repo {
         }
       }
     }
-//    object UserRepositoryImpl extends UserRepository {
-//      override def findById(userId: UserId): (ExecutionContext, DBSession) => Future[Option[User]] = ???
-//
-//      override def store(user: User): (ExecutionContext, DBSession) => Future[Unit] = ???
-//    }
+  }
+  object Airframe {
+    import cats._
+    trait UserRepository[F[_]] {
+      def findById(userId: UserId): F[Option[User]]
+
+      def store(user: User): F[Unit]
+    }
+
+    trait UserApplication[F[_]] {
+      import wvlet.airframe.bind
+      implicit val M: Monad[F] = bind[Monad[F]]
+      val repo: UserRepository[F] = bind[UserRepository[F]]
+
+      def updateName(userId: String, newName: String) = {
+        val userOptF: F[Option[User]] =
+          repo.findById(UserId(userId))
+
+        cats.Monad[F].map(userOptF) { user =>
+          ??? // update user name process
+        }
+      }
+    }
   }
 }
