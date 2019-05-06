@@ -10,36 +10,46 @@ import net.petitviolet.example.infra.daos.Database
 import scala.concurrent.Future
 
 object UserRepositoryImpl extends UserRepository[AsyncIO] {
+  override def findById(id: Id[User]): AsyncIO[Option[User]] = {
+    Kleisli {
+      case (dbSession, ec) =>
+        Future {
+          daos.User.findById(id.value)(dbSession) map dto2domain
+        }(ec)
+    }
+  }
+
+  override def store(entity: User): AsyncIO[User] = {
+    Kleisli {
+      case (dbSession, ec) =>
+        Future {
+//          daos.User.store(domain2dto(entity))(dbSession)
+          // delete + insert
+          daos.User.deleteById(entity.id.value)(dbSession)
+          daos.User.insert(domain2dto(entity))(dbSession)
+          entity
+        }(ec)
+    }
+  }
+
   private def dto2domain(dto: daos.User): User = {
     User.apply(dto.id, dto.email, dto.name, dto.status, dto.visibility, EDateTime(dto.createdAt))
+  }
+  private def domain2dto(domain: User): daos.User = {
+    daos.User(
+      domain.id.value,
+      domain.email.value,
+      domain.name.value,
+      domain.status.value,
+      domain.visibility.value,
+      domain.createdAt.value,
+      Database.now()
+    )
   }
 
   override def findAll: AsyncIO[Seq[User]] = Kleisli { implicit ctx =>
     Future {
       daos.User.findAll() map dto2domain: Seq[User]
-    }
-  }
-
-  override def findById(id: Id[User]): AsyncIO[Option[User]] = {
-    Kleisli { implicit ctx: Ctx =>
-      Future {
-        daos.User.findById(id.value) map dto2domain
-      }
-    }
-  }
-
-  override def store(entity: User): AsyncIO[User] = {
-    Kleisli { implicit ctx =>
-      Future {
-        daos.User.deleteById(entity.id.value)
-        daos.User.createWithAttributes(
-          'id -> entity.id.value,
-          'name -> entity.name.value,
-          'createdAt -> entity.createdAt.value,
-          'updatedAt -> Database.now()
-        )
-        entity
-      }
     }
   }
 

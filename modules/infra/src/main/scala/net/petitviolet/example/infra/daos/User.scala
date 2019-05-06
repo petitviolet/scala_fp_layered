@@ -13,6 +13,7 @@ case class User(id: String,
                 updatedAt: DateTime)
 
 object User extends ORMapperWithStringId[User] {
+  def store(user: User)(implicit s: DBSession): Unit = ???
 
   override protected val _tableName: String = "user"
 

@@ -2,7 +2,7 @@ package net.petitviolet.example.domains.posts
 
 import net.petitviolet.example.commons.{ DateTime, Validation }
 import net.petitviolet.example.domains.users.User
-import net.petitviolet.example.domains.{ AuthenticatedContext, Entity, Id }
+import net.petitviolet.example.domains.{ Context, Entity, Id }
 import net.petitviolet.operator.toIntOps
 
 sealed abstract case class Post(
@@ -22,13 +22,11 @@ object Post {
     new Post(id, createdBy, Text(text), createdAt, updatedAt) {}
   }
 
-  def create(text: String)(
-      implicit ctx: AuthenticatedContext
-  ): Validation.Validated[Post] = {
+  def create(user: User, text: String)(implicit ctx: Context): Validation.Validated[Post] = {
     Text.create(text).map { text =>
       new Post(
         Id.generate,
-        ctx.user.id,
+        user.id,
         text,
         ctx.now,
         ctx.now

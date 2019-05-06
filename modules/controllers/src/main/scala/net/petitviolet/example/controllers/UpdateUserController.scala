@@ -3,7 +3,8 @@ package net.petitviolet.example.controllers
 import akka.http.scaladsl.server.Route
 import cats.data.Validated.{ Invalid, Valid }
 import net.petitviolet.example.applications._
-import net.petitviolet.example.domains.impl.AsyncIO
+import net.petitviolet.example.domains.impl.{ AsyncIO, UserRepositoryImpl }
+import net.petitviolet.example.domains.users.UserRepository
 import net.petitviolet.example.infra.daos.Database
 import spray.json.RootJsonFormat
 
@@ -14,6 +15,8 @@ object UpdateUserController extends Controller {
   override protected def parallelism: Int = 2
 
   implicit val format: RootJsonFormat[UpdateUserParam] = jsonFormat2(UpdateUserParam.apply)
+
+  implicit val userRepository: UserRepository[AsyncIO] = UserRepositoryImpl
 
   override lazy val route: Route =
     (post & path("user" / "update") & entity(as[UpdateUserParam])) { param =>

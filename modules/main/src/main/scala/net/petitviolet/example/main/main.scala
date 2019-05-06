@@ -20,8 +20,8 @@ import net.petitviolet.example.controllers.{
 import net.petitviolet.example.infra.daos.Database
 
 import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
+import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.util.{ Failure, Success, Try }
 
 object main extends Application {
   override protected val applicationName: String = "app"
@@ -53,8 +53,8 @@ trait Application extends Directives with LoggerProvider {
   }
 
   /**
-    * HTTPサーバーの起動
-    */
+   * HTTPサーバーの起動
+   */
   def startServer(): Unit = synchronized {
     logger.info(s"application starting...")
     initialize()
@@ -80,8 +80,8 @@ trait Application extends Directives with LoggerProvider {
   }
 
   /**
-    * サーバーを停止する
-    */
+   * サーバーを停止する
+   */
   def stopServer(): Unit = synchronized {
     implicit val ec = ExecutionContext.global
 
@@ -119,8 +119,7 @@ trait Application extends Directives with LoggerProvider {
       ExecutionContext.fromExecutorService(Executors.newSingleThreadExecutor())
     Database.SampleDB.healthCheck().map { _ =>
       val req: HttpRequest =
-        HttpRequest(HttpMethods.GET,
-                    uri = Uri(s"http://$host:$port$healthPath"))
+        HttpRequest(HttpMethods.GET, uri = Uri(s"http://$host:$port$healthPath"))
       val res = http.get().singleRequest(req)
 
       logger.info(s"check-self-request: ${Await.result(res, 10.seconds)}")
@@ -130,8 +129,8 @@ trait Application extends Directives with LoggerProvider {
   def main(args: Array[String]): Unit = {
     startServer()
     concurrent.blocking {
-      val _ = scala.io.StdIn.readLine(
-        "=================\nPress RETURN to stop server...\n==============\n")
+      val _ = scala.io.StdIn
+        .readLine("=================\nPress RETURN to stop server...\n==============\n")
       stopServer()
     }
     logger.info(s"ﾉｼ")

@@ -10,7 +10,8 @@ trait Entity { self =>
 
   override def hashCode(): Int = id.##
 
-  def canEqual(other: Any): Boolean = other.getClass == self.getClass // should override by descendant
+  def canEqual(other: Any): Boolean =
+    other.getClass == self.getClass // should override by descendant
 
   override final def equals(obj: scala.Any): Boolean = {
     canEqual(obj) && obj.asInstanceOf[Entity].id == self.id
