@@ -115,15 +115,15 @@ object Database extends LoggerProvider {
       (
         ("11111111-1111-1111-1111-111111111111",
          "alice@example.com",
-         "Activated",
-         "public",
-         "alice") ::
-          ("22222222-2222-2222-2222-222222222222", "bob@example.com", "Activated", "public", "bob") ::
+         "alice",
+         "activated",
+         "public") ::
+          ("22222222-2222-2222-2222-222222222222", "bob@example.com", "bob", "activated", "public") ::
           ("33333333-3333-3333-3333-333333333333",
          "charlie@example.com",
-         "Activated",
-         "public",
-         "charlie") ::
+         "charlie",
+         "activated",
+         "public") ::
           Nil
       ) foreach {
         case (id, email, name, status, visibility) =>
@@ -154,9 +154,11 @@ sealed trait ORMapper[T] extends SkinnyMapperBase[T] {
 
   protected def _tableName: String
 
-  final override def tableName: String = _tableName
+  final override lazy val tableName: String = _tableName
 
-  final override def connectionPoolName: Any = db.dbName
+  final override lazy val connectionPoolName: Any = db.dbName
+
+  final override lazy val column = super.column
 
   // 不用意にWriteSessionにならないように
   override def autoSession: DBSession =
